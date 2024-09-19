@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Uploader</title>
+    <link href="cropperjs/cropper.css" rel="stylesheet" />
+    <script src="cropperjs/cropper.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/5d671bea4f.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="notification" class="notification"></div>
+    
+    <div class="uploader-container" id="initialInterface">
+      <div class="upload-text">Browse / Drag & Drop Photos</div>
+      <div class="upload-box" id="uploadBox">
+        <input type="file" id="fileInput" class="fileInput" multiple />
+      </div>
+    </div>
+
+    <!-- Editing Interface (hidden by default) -->
+    <div class="container" id="editingInterface" style="display: none">
+      <!-- Left Tray Column for Selected Images -->
+      <div class="image-tray" id="imageTray"></div>
+
+      <!-- Center for Focused Image and Buttons -->
+      <div class="focus-section">
+        <div class="focus-image-container">
+          <img
+            src=""
+            alt="Focused Image"
+            id="focusedImage"
+            class="focus-image"
+          />
+          <div id="canvasContainer" class="canvas-container">
+            <canvas id="canvas"></canvas>
+          </div>          
+        </div>
+
+        <div class="action-buttons">
+          <button class="add-btn" id="add-btn">ADD PHOTOS</button>
+          <button class="upload-btn" id="uploadFilesButton">UPLOAD NOW</button>
+        </div>
+      </div>
+      <!-- Right Column for Editing Tools -->
+      <div class="edit-tools">
+        <div class="tool icon">
+          <i class="fa-solid fa-rotate-left" id="rotateLeft"></i>
+        </div>
+        <div class="tool icon">
+          <i class="fa-solid fa-rotate-right" id="rotateRight"></i>
+        </div>
+        <div class="tool icon">
+          <i class="fa-solid fa-font" id="editTextIcon"></i>
+        </div>
+        <div class="tool icon">
+          <i class="fas fa-paint-brush" id="drawIcon"></i>
+        </div>
+        <div class="tool icon">
+          <i class="fa-solid fa-crop-simple" id="cropIcon"></i>
+        </div>
+        <div class="tool icon">
+          <i class="fa-regular fa-trash-can" id="delete"></i>
+        </div>
+        <div class="tool icon">
+            <i class="fa-solid fa-check" id="tickIcon"></i> <!-- Checkmark icon -->
+          </div>
+      </div>
+    </div>
+
+    <div id="uploadProgressInterface" class="upload-progress-interface">
+      <div id="progressContainer" class="progress-container">
+        <!-- Progress bars and thumbnails will be dynamically added here -->
+      </div>
+
+      <!-- <div class="uploader-container2">
+        <div class="upload-text2">Browse / Drag & Drop Photos</div>
+        <div class="upload-box2">
+          <input type="file" id="fileInput2" class="fileInput" multiple />
+        </div>
+      </div> -->
+      <div id="interface-container"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+    <!-- Include your JavaScript files -->
+    <script type="module" src="upload.js"></script>
+    <script type="module" src="script.js" defer></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.877.0.min.js"></script>
+  </body>
+</html>
