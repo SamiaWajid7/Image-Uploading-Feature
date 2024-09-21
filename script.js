@@ -26,98 +26,98 @@ document.addEventListener("DOMContentLoaded", () => {
   fileInput.addEventListener("click", (event) => {
     console.log("File input clicked");
     event.stopPropagation();
-  });    
+  });
 
   // Handle file input change event
-//  fileInput.addEventListener("change", (event) => {
-//   const files = event.target.files;
-//   handleFiles(files);
-// });
+  //  fileInput.addEventListener("change", (event) => {
+  //   const files = event.target.files;
+  //   handleFiles(files);
+  // });
 
-// Function to handle files and append them to the image tray
+  // Function to handle files and append them to the image tray
 
-// Function to handle file input and append valid files to the image tray and filesToUpload
-function handleFileInput(event) {
-  const files = Array.from(event.target.files);
+  // Function to handle file input and append valid files to the image tray and filesToUpload
+  function handleFileInput(event) {
+    const files = Array.from(event.target.files);
 
-  if (files.length > 0) {
-    if (initialInterface) {
-      initialInterface.style.display = "none";
-    }
+    if (files.length > 0) {
+      if (initialInterface) {
+        initialInterface.style.display = "none";
+      }
 
-    if (editingInterface) {
-      editingInterface.style.display = "flex";
-    }
+      if (editingInterface) {
+        editingInterface.style.display = "flex";
+      }
 
-    if (imageTray) {
-      // Optional: Clear existing images before adding new ones
-      // imageTray.innerHTML = "";
+      if (imageTray) {
+        // Optional: Clear existing images before adding new ones
+        // imageTray.innerHTML = "";
 
-      let validFiles = []; // Array to hold files that meet the size requirements
+        let validFiles = []; // Array to hold files that meet the size requirements
 
-      files.forEach((file, index) => {
-        if (file.size > MAX_SIZE_BYTES) {
-          alert(`The file ${file.name} exceeds the ${MAX_SIZE_MB} MB size limit.`);
-          return; // Skip this file and continue with the next one
-        }
-
-        validFiles.push(file); // Add the file to the validFiles array
-
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.classList.add("tray-image");
-          img.setAttribute('data-filename', file.name); // Associate filename with image
-
-          // Add event listener to update focused image when tray image is clicked
-          img.addEventListener("click", function () {
-            // Remove 'selected' class from previously selected image
-            const currentlySelectedImg = document.querySelector(".tray-image.selected");
-            if (currentlySelectedImg) {
-              currentlySelectedImg.classList.remove("selected");
-            }
-
-            // Set the new image as focused
-            const imageToDisplay = img.dataset.croppedImageUrl ? img.dataset.croppedImageUrl : img.src;
-            if (focusedImage) {
-              focusedImage.src = imageToDisplay;
-              selectNewImage(focusedImage);
-            }
-
-            // Highlight the clicked thumbnail as selected
-            img.classList.add("selected");
-          });
-
-          imageTray.appendChild(img); // Add image to the tray
-
-          // Focus the first image by default only if no other image is selected
-          if (index === 0 && !document.querySelector(".tray-image.selected")) {
-            img.classList.add("selected");
-            if (focusedImage) {
-              focusedImage.src = img.src;
-              selectNewImage(focusedImage);
-            }
+        files.forEach((file, index) => {
+          if (file.size > MAX_SIZE_BYTES) {
+            alert(`The file ${file.name} exceeds the ${MAX_SIZE_MB} MB size limit.`);
+            return; // Skip this file and continue with the next one
           }
-        };
 
-        reader.readAsDataURL(file); // Read the file as a data URL
-      });
+          validFiles.push(file); // Add the file to the validFiles array
 
-      // Update filesToUpload with only the valid files
-      filesToUpload.push(...validFiles);
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("tray-image");
+            img.setAttribute('data-filename', file.name); // Associate filename with image
+
+            // Add event listener to update focused image when tray image is clicked
+            img.addEventListener("click", function () {
+              // Remove 'selected' class from previously selected image
+              const currentlySelectedImg = document.querySelector(".tray-image.selected");
+              if (currentlySelectedImg) {
+                currentlySelectedImg.classList.remove("selected");
+              }
+
+              // Set the new image as focused
+              const imageToDisplay = img.dataset.croppedImageUrl ? img.dataset.croppedImageUrl : img.src;
+              if (focusedImage) {
+                focusedImage.src = imageToDisplay;
+                selectNewImage(focusedImage);
+              }
+
+              // Highlight the clicked thumbnail as selected
+              img.classList.add("selected");
+            });
+
+            imageTray.appendChild(img); // Add image to the tray
+
+            // Focus the first image by default only if no other image is selected
+            if (index === 0 && !document.querySelector(".tray-image.selected")) {
+              img.classList.add("selected");
+              if (focusedImage) {
+                focusedImage.src = img.src;
+                selectNewImage(focusedImage);
+              }
+            }
+          };
+
+          reader.readAsDataURL(file); // Read the file as a data URL
+        });
+
+        // Update filesToUpload with only the valid files
+        filesToUpload.push(...validFiles);
+      }
     }
   }
-}
 
-// Attach the combined function to the file input change event
-fileInput.addEventListener("change", handleFileInput);
+  // Attach the combined function to the file input change event
+  fileInput.addEventListener("change", handleFileInput);
   
-addPhotosButton.addEventListener("click", () => {
-  fileInput.click(); // Trigger the file input to open the file dialog
-  console.log("add clicked");
-});
+  addPhotosButton.addEventListener("click", () => {
+    fileInput.click(); // Trigger the file input to open the file dialog
+    console.log("add clicked");
+  });
 
   // Initialize Cropper when needed
   function initializeCropper() {
@@ -176,13 +176,13 @@ addPhotosButton.addEventListener("click", () => {
       const newImageURL = URL.createObjectURL(blob);
       const filename = document.querySelector(".tray-image.selected").dataset.filename;
 
-    // Create a new File object for the rotated image
-    const rotatedFile = new File([blob], filename || "rotated-image.jpg", { type: blob.type });
+      // Create a new File object for the rotated image
+      const rotatedFile = new File([blob], filename || "rotated-image.jpg", { type: blob.type });
 
-    // Replace the original file in filesToUpload with the rotated image
-    filesToUpload = filesToUpload.map(file =>
-      file.name === filename ? rotatedFile : file
-    );
+      // Replace the original file in filesToUpload with the rotated image
+      filesToUpload = filesToUpload.map(file =>
+        file.name === filename ? rotatedFile : file
+      );
 
       // Update the main focused image with the rotated version
       focusedImage.src = newImageURL;
@@ -248,59 +248,59 @@ addPhotosButton.addEventListener("click", () => {
           editingInterface.style.display = "none";
         }
       }
-       // Remove the file from the filesToUpload array
-    filesToUpload = filesToUpload.filter(file => file.name !== fileNameToDelete);
+      // Remove the file from the filesToUpload array
+      filesToUpload = filesToUpload.filter(file => file.name !== fileNameToDelete);
     }
   });
 
-// Handle tick icon click (finalize crop and update image)
-document.getElementById("tickIcon").addEventListener("click", () => {
-  if (cropper) {
-    const canvas = cropper.getCroppedCanvas();
-    if (canvas) {
-      // Convert canvas to a Blob (binary image data)
-      canvas.toBlob((blob) => {
-        const newImageURL = URL.createObjectURL(blob);
-        const filename = document.querySelector(".tray-image.selected").dataset.filename;
+  // Handle tick icon click (finalize crop and update image)
+  document.getElementById("tickIcon").addEventListener("click", () => {
+    if (cropper) {
+      const canvas = cropper.getCroppedCanvas();
+      if (canvas) {
+        // Convert canvas to a Blob (binary image data)
+        canvas.toBlob((blob) => {
+          const newImageURL = URL.createObjectURL(blob);
+          const filename = document.querySelector(".tray-image.selected").dataset.filename;
 
-        const croppedFile = new File([blob], filename || "cropped-image.jpg", { type: blob.type });
+          const croppedFile = new File([blob], filename || "cropped-image.jpg", { type: blob.type });
 
-         // Replace the original file in filesToUpload with the cropped image
-         filesToUpload = filesToUpload.map(file =>
-          file.name === filename ? croppedFile : file
-        );
+          // Replace the original file in filesToUpload with the cropped image
+          filesToUpload = filesToUpload.map(file =>
+            file.name === filename ? croppedFile : file
+          );
 
-        // Update the main focused image with the cropped version
-        focusedImage.src = newImageURL;
+          // Update the main focused image with the cropped version
+          focusedImage.src = newImageURL;
 
-        // Find the currently selected image in the tray
-        const selectedImg = document.querySelector(".tray-image.selected");
-        if (selectedImg) {
-          // Update the thumbnail in the tray with the cropped version
-          selectedImg.src = newImageURL;
+          // Find the currently selected image in the tray
+          const selectedImg = document.querySelector(".tray-image.selected");
+          if (selectedImg) {
+            // Update the thumbnail in the tray with the cropped version
+            selectedImg.src = newImageURL;
 
-          // Store the new cropped image URL as a data attribute
-          selectedImg.dataset.croppedImageUrl = newImageURL; 
-        } 
+            // Store the new cropped image URL as a data attribute
+            selectedImg.dataset.croppedImageUrl = newImageURL;
+          }
 
-        // Clean up: Destroy the Cropper.js instance after cropping
-        cropper.destroy();
-        cropper = null;
-      });
+          // Clean up: Destroy the Cropper.js instance after cropping
+          cropper.destroy();
+          cropper = null;
+        });
+      }
+    } else {
+      // Save the rotated image if cropping is not active
+      saveRotatedImage();
     }
-  } else {
-    // Save the rotated image if cropping is not active
-    saveRotatedImage();
-  }
-});
+  });
     
   function showUploadProgressInterface() {
     if (editingInterface) {
-        editingInterface.style.display = "none";
+      editingInterface.style.display = "none";
     }
   
     if (uploadProgressInterface) {
-        uploadProgressInterface.style.display = "block";
+      uploadProgressInterface.style.display = "block";
     }
   }
   function createFileUploadInterface() {
@@ -335,7 +335,7 @@ document.getElementById("tickIcon").addEventListener("click", () => {
         currentInterfaceDiv.style.display = 'none';
         uploadInterfaceDiv.style.display = 'none';
       }
-  });
+    });
    
 
     // Append elements to the interface div
@@ -346,113 +346,67 @@ document.getElementById("tickIcon").addEventListener("click", () => {
     // Append the interface to the container
     document.getElementById('interface-container').appendChild(interfaceDiv);
     currentInterfaceDiv = interfaceDiv;
-}
-
-// Handle "Upload All" button click
-document.getElementById('uploadFilesButton').addEventListener('click', async () => {
-  createFileUploadInterface(); // Create or update the file upload interface
-  showUploadProgressInterface();
-
-  const fileInput = document.getElementById('fileInput');
-  const files = fileInput.files;
-
-  if (files.length === 0) {
-    alert('No files selected.');
-    return;
   }
 
-  const fileArray = Array.from(files);
-
-  try {
-    const successfulUploads = await uploadFiles(fileArray);
-    console.log('Successfully uploaded files:', successfulUploads);
-  } catch (error) {
-    console.error('Error uploading files:', error);
-  }
-});
-
-// Function to delete a file from S3
-function deleteFileFromS3(file) {
-  return fetch(`http://localhost:3000/delete-file?filename=${encodeURIComponent(file.name)}`, {
-    method: 'DELETE',
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Failed to delete file ${file.name} from S3`);
-    }
-    return response.json();
-  });
+  // Function to delete a file from S3
+  function deleteFileFromS3(file) {
+    return fetch(`http://localhost:3000/delete-file?filename=${encodeURIComponent(file.name)}`, {
+      method: 'DELETE',
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to delete file ${file.name} from S3`);
+        }
+        return response.json();
+      });
   }
   
-// Function to create progress bar and controls
-function createProgressBar(file) {
-  const progressBarWrapper = document.createElement("div");
-  progressBarWrapper.classList.add("progress-bar-wrapper");
+  // Function to create progress bar and controls
+  function createProgressBar(file) {
+    const progressBarWrapper = document.createElement("div");
+    progressBarWrapper.classList.add("progress-bar-wrapper");
 
-  const fileNameLabel = document.createElement("span");
-  fileNameLabel.textContent = file.name;
-  fileNameLabel.style.fontSize = "12px"; // Set the font size to 12px
-  progressBarWrapper.appendChild(fileNameLabel);
+    const fileNameLabel = document.createElement("span");
+    fileNameLabel.textContent = file.name;
+    fileNameLabel.style.fontSize = "12px"; // Set the font size to 12px
+    progressBarWrapper.appendChild(fileNameLabel);
 
-  const thumbnail = document.createElement("img");
-  thumbnail.classList.add("thumbnail");
-  progressBarWrapper.appendChild(thumbnail);
+    const thumbnail = document.createElement("img");
+    thumbnail.classList.add("thumbnail");
+    progressBarWrapper.appendChild(thumbnail);
 
-  const sizeLabel = document.createElement("span");
-  sizeLabel.classList.add("size-label");
-  sizeLabel.textContent = "0 MB of " + (file.size / (1024 * 1024)).toFixed(2) + " MB";
-  progressBarWrapper.appendChild(sizeLabel);
+    const sizeLabel = document.createElement("span");
+    sizeLabel.classList.add("size-label");
+    sizeLabel.textContent = "0 MB of " + (file.size / (1024 * 1024)).toFixed(2) + " MB";
+    progressBarWrapper.appendChild(sizeLabel);
 
-  const progressBar = document.createElement("div");
-  progressBar.classList.add("progress-bar");
-  progressBarWrapper.appendChild(progressBar);
+    const progressBar = document.createElement("div");
+    progressBar.classList.add("progress-bar");
+    progressBarWrapper.appendChild(progressBar);
 
-  // Create a container for the buttons
-  const buttonContainer = document.createElement("div");
-  buttonContainer.classList.add("button-container");
+    // Create a container for the buttons
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("button-container");
 
-  const pauseButton = document.createElement("button");
-  pauseButton.textContent = "Pause";
-  pauseButton.classList.add("pause-button");
-  buttonContainer.appendChild(pauseButton);
+    const pauseButton = document.createElement("button");
+    pauseButton.textContent = "Pause";
+    pauseButton.classList.add("pause-button");
+    buttonContainer.appendChild(pauseButton);
 
-  // Create delete button
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.classList.add("delete-button");
-  buttonContainer.appendChild(deleteButton);
+    // Create delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList.add("delete-button");
+    buttonContainer.appendChild(deleteButton);
 
-  // Append the button container to the progress bar wrapper
-  progressBarWrapper.appendChild(buttonContainer);
+    // Append the button container to the progress bar wrapper
+    progressBarWrapper.appendChild(buttonContainer);
   
-  progressContainer.appendChild(progressBarWrapper);
+    progressContainer.appendChild(progressBarWrapper);
 
-  return { progressBar, sizeLabel, thumbnail, pauseButton, deleteButton, progressBarWrapper  };
-}
-  
-// Function to upload a file with progress
-function uploadFileWithProgress(file, presignedUrl) {
-  const chunkSize = 3 * 1024 * 1024; // 3 MB chunks
-  const totalChunks = Math.ceil(file.size / chunkSize);
-  let currentChunk = 0;
-  let isPaused = false;
-  let controller = new AbortController();
-  let uploadedBytes = 0;  // To keep track of uploaded bytes
-
-  const { progressBar, sizeLabel, thumbnail, pauseButton, deleteButton, progressBarWrapper } = createProgressBar(file);  // Create and get the progress bar elements
-
-  // Calculate progress and update the progress bar
-  function updateProgress() {
-    const percentage = Math.round((uploadedBytes / file.size) * 100);
-    progressBar.style.width = `${percentage}%`;
-
-    // Ensure that we don't exceed the total file size
-    const uploadedMB = (uploadedBytes / (1024 * 1024)).toFixed(2);
-    const totalMB = (file.size / (1024 * 1024)).toFixed(2);
-
-    sizeLabel.textContent = `${uploadedMB} MB of ${totalMB} MB`;
+    return { progressBar, sizeLabel, thumbnail, pauseButton, deleteButton, progressBarWrapper };
   }
-
+  
   // Function to upload a chunk
   function uploadChunk(chunk, chunkNumber) {
     return fetch(presignedUrl, {
@@ -474,8 +428,8 @@ function uploadFileWithProgress(file, presignedUrl) {
         console.log(`File ${file.name} uploaded successfully!`);
         thumbnail.src = URL.createObjectURL(file);
 
-         // Hide the pause button after upload is complete
-         pauseButton.style.display = "none";
+        // Hide the pause button after upload is complete
+        pauseButton.style.display = "none";
 
         // Attach delete functionality
         deleteButton.addEventListener('click', () => {
@@ -522,18 +476,29 @@ function uploadFileWithProgress(file, presignedUrl) {
 
   // Start uploading chunks
   uploadNextChunk();
+
+async function getPresignedUrl(fileName) {
+    const response = await axios.post('https://brickell-watch-new.herokuapp.com/api/v1/uploads/images', {
+        fileName: fileName,
+        fileType: 'image/jpeg' 
+    });
+    return response.data.url; 
 }
 
-// Event listener for browseMoreFilesButton
-// const browseMoreFilesButton = document.getElementById("browseMoreFilesButton");
 
-// browseMoreFilesButton.addEventListener("click", () => {
-//   fileInput.click();
-  // });
-  let uploadInterfaceDiv = document.getElementById("uploadProgressInterface");
-  let currentInterfaceDiv = null; // Global variable to store the reference to the created interface div
-
-// Example trigger: Attach the creation function to an element click
-// document.getElementById('uploadFilesButton').addEventListener('click', createFileUploadInterface);
+document.getElementById('uploadFilesButton').addEventListener('click', async () => {
+  console.log("clicked");
+  if (filesToUpload.length > 0) {
+    try {
+      const result = await uploadFiles(filesToUpload); // Pass the filesToUpload array
+      console.log('Upload completed:', result);
+    } catch (error) {
+      console.error('Error during file upload:', error);
+    }
+  } else {
+    console.log('No files to upload.');
+  }
+});
 
 });
+
