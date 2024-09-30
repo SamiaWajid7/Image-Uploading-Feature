@@ -4,7 +4,7 @@ const uploadFiles = async (files, progressBars) => {
   console.log("uploadFiles", files);
   try {
     const response = await axios.post(
-      // 'https://brickell-watch-new.herokuapp.com/api/v1/uploads/images',
+      'https://brickell-watch-new.herokuapp.com/api/v1/uploads/images',
       {
         filenames: files.map((file) => file.name),
       },
