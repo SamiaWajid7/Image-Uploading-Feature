@@ -166,38 +166,6 @@ function handleFileInput(event) {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 // Helper function to update focused media (image or video)
 function updateFocusedMedia(type, thumbnail, file) {
   const currentlySelected = document.querySelector(".tray-image.selected");
@@ -431,16 +399,6 @@ document.getElementById('delete').addEventListener('click', () => {
     }
   });
     
-  // function showUploadProgressInterface() {
-  //   if (editingInterface) {
-  //     editingInterface.style.display = "none";
-  //   }
-  
-  //   if (uploadProgressInterface) {
-  //     uploadProgressInterface.style.display = "block";
-  //   }
-  // }
-
   // Function to show the upload progress interface
   function showUploadProgressInterface() {
     if (editingInterface) {
@@ -451,102 +409,13 @@ document.getElementById('delete').addEventListener('click', () => {
         }
   }
   
-  // function createFileUploadInterface() {
-  //   // Create the container div
-  //   const interfaceDiv = document.createElement('div');
-  //   interfaceDiv.className = 'file-upload-interface';
+ 
 
-  //   // Create the "Browse/Drag files" text div
-  //   const textDiv = document.createElement('div');
-  //   textDiv.innerText = "Browse / Drag & Drop Photos";
-  //   textDiv.className = 'browse-text';
-
-  //   // Create the clickable div to open file explorer
-  //   const uploadDiv = document.createElement('div');
-  //   uploadDiv.className = 'upload-area';
-
-  //   // Create the hidden file input
-  //   const fileInput = document.createElement('input');
-  //   fileInput.type = 'file';
-  //   fileInput.multiple = true;
-  //   fileInput.style.display = 'none'; // Hide the file input
-
-  //   // Attach event listener to open file dialog
-  //   uploadDiv.addEventListener('click', () => fileInput.click());
-
-  //   // Handle file selection
-  //   fileInput.addEventListener("change", (event) => {
-  //     handleFileInput(event);
-
-  //     // Hide the interface after files are selected
-  //     // if (currentInterfaceDiv) {
-  //     //   currentInterfaceDiv.style.display = 'none';
-  //     //   uploadInterfaceDiv.style.display = 'none';
-  //     // }
-  //   });
+ 
    
 
-  //   // Append elements to the interface div
-  //   interfaceDiv.appendChild(textDiv);
-  //   interfaceDiv.appendChild(uploadDiv);
-  //   interfaceDiv.appendChild(fileInput);
 
-  //   // Append the interface to the container
-  //   // document.getElementById('interface-container').appendChild(interfaceDiv);
-  //   // currentInterfaceDiv = interfaceDiv;
-  // }
   let clearPreviousFiles = false; // Flag to control whether previous files should be cleared
-
-// Function to create the file upload interface
-// function createFileUploadInterface() {
-//   // Create the container div
-//   const interfaceDiv = document.createElement('div');
-//   interfaceDiv.className = 'file-upload-interface';
-
-//   // Create the "Browse/Drag files" text div
-//   const textDiv = document.createElement('div');
-//   textDiv.innerText = "Browse / Drag & Drop Photos";
-//   textDiv.className = 'browse-text';
-
-//   // Create the clickable div to open file explorer
-//   const uploadDiv = document.createElement('div');
-//   uploadDiv.className = 'upload-area';
-
-//   // Create the hidden file input
-//   const fileInput = document.createElement('input');
-//   fileInput.type = 'file';
-//   fileInput.multiple = true;
-//   fileInput.style.display = 'none'; // Hide the file input
-
-//   // Attach event listener to open file dialog
-//   // uploadDiv.addEventListener('click', () => fileInput.click());
-
-//   // When the user clicks the Browse button
-//   uploadDiv.addEventListener('click', () => {
-//     clearPreviousFiles = true;  // Set flag to true when browsing for new files
-//     fileInput.click();          // Trigger the file dialog to open
-//   });
-//   // Handle file selection
-//   fileInput.addEventListener("change", (event) => {
-//     handleFileInput(event);
-//       // Hide the interface after files are selected
-//       if (currentInterfaceDiv) {
-//         currentInterfaceDiv.style.display = 'none';
-//         uploadInterfaceDiv.style.display = 'none';
-//       }
-  
-
-//   });
-
-//   // Append elements to the interface div
-//   interfaceDiv.appendChild(textDiv);
-//   interfaceDiv.appendChild(uploadDiv);
-//   interfaceDiv.appendChild(fileInput);
-
-//   // Append the interface to the container
-//   document.getElementById('interface-container').appendChild(interfaceDiv);
-//   currentInterfaceDiv = interfaceDiv;
-//   }
 
 // Function to create the file upload interface
 function createFileUploadInterface() {
