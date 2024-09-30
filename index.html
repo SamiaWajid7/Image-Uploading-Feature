@@ -31,16 +31,12 @@
 
       <!-- Center for Focused Image and Buttons -->
       <div class="focus-section">
-        <div class="focus-image-container">
-          <img
-            src=""
-            alt="Focused Image"
-            id="focusedImage"
-            class="focus-image"
-          />
-          <div id="canvasContainer" class="canvas-container">
-            <canvas id="canvas"></canvas>
-          </div>          
+        <div class="focus-image-container" id="focusImageContainer">
+          <img src="" alt="Focused Image" id="focusedImage" class="focus-image"/>
+          <video id="focusedVideo" style="display:none; max-width: 100%; max-height: 500px;" controls></video>
+          <!-- <div id="canvasContainer" class="canvas-container">
+            <canvas id="canvas"></canvas> -->
+          <!-- </div>           -->
         </div>
 
         <div class="action-buttons">
@@ -79,12 +75,7 @@
         <!-- Progress bars and thumbnails will be dynamically added here -->
       </div>
 
-      <!-- <div class="uploader-container2">
-        <div class="upload-text2">Browse / Drag & Drop Photos</div>
-        <div class="upload-box2">
-          <input type="file" id="fileInput2" class="fileInput" multiple />
-        </div>
-      </div> -->
+      
       <div id="interface-container"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
