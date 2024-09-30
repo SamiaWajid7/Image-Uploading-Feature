@@ -10,4 +10,4 @@ This project implements an image uploading feature that includes image cropping 
 - Upload images through a file input or drag-and-drop.
 - Edit images with cropping and rotating tools.
 - Preview selected and edited images in a tray.
-- Upload images to a server (upload functionality still in progress).
+- Upload images to a server.
