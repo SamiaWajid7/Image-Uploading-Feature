@@ -36,135 +36,168 @@ document.addEventListener("DOMContentLoaded", () => {
     event.stopPropagation();
   });
 
-  function handleFileInput(event) {
-    const files = Array.from(event.target.files);
 
-    // Clear the arrays and image tray if the user clicked "Browse" from the uploading interface
-    if (clearPreviousFiles) {
-        imageTray.innerHTML = ''; // This removes all the previously uploaded images from the tray
-        filesToUpload = [];       // Reset the filesToUpload array to store only new files
-        validFiles = [];          // Reset the validFiles array to store only new valid files
-        clearPreviousFiles = false;  // Reset the flag after clearing the previous files
-    }
+function handleFileInput(event) {
+  const files = Array.from(event.target.files);
 
-    if (files.length > 0) {
-        // Check if any valid files are added
-        let hasValidFiles = false;
+  // Clear the arrays and image tray if the user clicked "Browse" from the uploading interface
+  if (clearPreviousFiles) {
+      imageTray.innerHTML = ''; // This removes all the previously uploaded images from the tray
+      filesToUpload = [];       // Reset the filesToUpload array to store only new files
+      validFiles = [];          // Reset the validFiles array to store only new valid files
+      clearPreviousFiles = false;  // Reset the flag after clearing the previous files
+  }
 
-        // Process each file
-        files.forEach((file, index) => {
-            const fileType = file.type.split('/')[0]; // Get the file type (image or video)
+  if (files.length > 0) {
+    // Check if any valid files are added
+    let hasValidFiles = false;
 
-            // Check for images
-            if (fileType === "image") {
-                if (file.size > MAX_SIZE_BYTES) { // Size limit
-                    alert(`The file ${file.name} exceeds the size limit.`);
-                    return; // Skip this file and continue with the next
-                }
+      // Track the completion of file processing for both images and videos
+      const fileProcessingPromises = files.map((file, index) => {
+          return new Promise((resolve, reject) => {
+              const fileType = file.type.split('/')[0]; // Get the file type (image or video)
 
-                // Handle image file
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.classList.add("tray-image");
-                    img.setAttribute('data-filename', file.name); // Associate filename with image
+              // Handle image files
+              if (fileType === "image") {
+                  if (file.size > MAX_SIZE_BYTES) {
+                      alert(`The file ${file.name} exceeds the size limit.`);
+                      return reject(); // Skip this file
+                  }
 
-                    img.addEventListener("click", function () {
-                        updateFocusedMedia("image", img, file);
-                    });
+                  const reader = new FileReader();
+                  reader.onload = function (e) {
+                      const img = document.createElement("img");
+                      img.src = e.target.result;
+                      img.classList.add("tray-image");
+                      img.setAttribute('data-filename', file.name); // Associate filename with image
 
-                    imageTray.appendChild(img); // Add image to the tray
+                      img.addEventListener("click", function () {
+                          updateFocusedMedia("image", img, file);
+                      });
 
-                    if (index === 0 && !document.querySelector(".tray-image.selected")) {
-                        updateFocusedMedia("image", img, file); // Focus the first image
-                    }
+                      imageTray.appendChild(img); // Add image to the tray
 
-                    // Set hasValidFiles to true after adding a valid file
+                      if (index === 0 && !document.querySelector(".tray-image.selected")) {
+                          updateFocusedMedia("image", img, file); // Focus the first image
+                      }
+
+                      // Mark the file as valid and resolve the promise
                     validFiles.push(file);
                     hasValidFiles = true;
-                    // Hide initial interface and show editing interface
-                    if (initialInterface) {
-                        initialInterface.style.display = "none";
-                    }
-                    if (editingInterface) {
-                        editingInterface.style.display = "flex";
-                    }
-                };
-                reader.readAsDataURL(file); // Read the file as a data URL
+                      resolve();
+                  };
+                  reader.readAsDataURL(file); // Read the file as a data URL
 
-            } else if (fileType === "video") {
-                if (file.size > 300 * 1024 * 1024) { // Size limit
-                    alert(`The video ${file.name} exceeds the size limit.`);
-                    return; // Skip this video and continue with the next
-                }
+              } else if (fileType === "video") {
+                  if (file.size > 300 * 1024 * 1024) {
+                      alert(`The video ${file.name} exceeds the size limit.`);
+                      return reject(); // Skip this video
+                  }
 
-                const videoElement = document.createElement("video");
-                videoElement.src = URL.createObjectURL(file);
+                  const videoElement = document.createElement("video");
+                  videoElement.src = URL.createObjectURL(file);
 
-                videoElement.onloadedmetadata = function () {
-                    const duration = videoElement.duration; // Get the duration of the video in seconds
-                    if (duration > 180) { // Duration limit
-                        alert(`The video ${file.name} exceeds the 3 minutes duration limit.`);
-                        return; // Skip this video
-                    }
+                  videoElement.onloadedmetadata = function () {
+                      const duration = videoElement.duration;
+                      if (duration > 180) {
+                          alert(`The video ${file.name} exceeds the 3 minutes duration limit.`);
+                          return reject(); // Skip this video
+                      }
 
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    canvas.width = 160; // Thumbnail width
-                    canvas.height = 90; // Thumbnail height
+                      const canvas = document.createElement("canvas");
+                      const context = canvas.getContext("2d");
+                      canvas.width = 160; // Thumbnail width
+                      canvas.height = 90; // Thumbnail height
 
-                    videoElement.currentTime = 0; // Seek to the start
-                    videoElement.onseeked = function () {
-                        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                        const thumbnailDataUrl = canvas.toDataURL(); // Get the thumbnail image as a data URL
+                      videoElement.currentTime = 0;
+                      videoElement.onseeked = function () {
+                          context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                          const thumbnailDataUrl = canvas.toDataURL();
 
-                        const videoThumbnail = document.createElement("img");
-                        videoThumbnail.src = thumbnailDataUrl; // Use the generated thumbnail
-                        videoThumbnail.classList.add("tray-image");
-                        videoThumbnail.setAttribute('data-filename', file.name); // Associate filename with video
-                        videoThumbnail.setAttribute('data-file', URL.createObjectURL(file)); // Store video URL
+                          const videoThumbnail = document.createElement("img");
+                          videoThumbnail.src = thumbnailDataUrl;
+                          videoThumbnail.classList.add("tray-image");
+                          videoThumbnail.setAttribute('data-filename', file.name); // Associate filename with video
+                          videoThumbnail.setAttribute('data-file', URL.createObjectURL(file)); // Store video URL
 
-                        videoThumbnail.addEventListener("click", function () {
-                            updateFocusedMedia("video", videoThumbnail, file);
-                        });
+                          videoThumbnail.addEventListener("click", function () {
+                              updateFocusedMedia("video", videoThumbnail, file);
+                          });
 
-                        imageTray.appendChild(videoThumbnail); // Add video thumbnail to the tray
+                          imageTray.appendChild(videoThumbnail);
 
-                        // Focus the video thumbnail
-                       if (!document.querySelector(".tray-image.selected")) {
-                           updateFocusedMedia("video", videoThumbnail, file); // Focus the first video
+                          if (!document.querySelector(".tray-image.selected")) {
+                              updateFocusedMedia("video", videoThumbnail, file);
                           }
-                      
-                        // Set hasValidFiles to true after adding a valid file
+
+                          // Mark the file as valid and resolve the promise
                         validFiles.push(file);
-                        hasValidFiles = true;
-                        // Hide initial interface and show editing interface
-                        if (initialInterface) {
-                            initialInterface.style.display = "none";
-                        }
-                        if (editingInterface) {
-                            editingInterface.style.display = "flex";
-                        }
-                    };
-                };
+                        hasValidFiles = true; // Set to true if a valid file is added
+                          resolve();
+                      };
+                  };
+              } else {
+                  alert(`The file ${file.name} is neither an image nor a video.`);
+                  reject(); // Skip unsupported file types
+              }
+          });
+      });
 
-            else {
-                alert(`The file ${file.name} is neither an image nor a video.`);
-                return; // Skip unsupported file types and continue with the next
-            }
-        });
+      // Wait for all files to be processed
+      Promise.all(fileProcessingPromises)
+          .then(() => {
+              // Once all files are processed, update filesToUpload
+              filesToUpload = [...validFiles];
+              console.log("Final Files to Upload:", filesToUpload);
 
-        
-
-        // No need to check if valid files were added at the end since it's already handled in the loop.
-        // Transfer valid files to the filesToUpload array
-        filesToUpload = [...validFiles]; // Spread operator to copy valid files
-        console.log("Final Files to Upload:", filesToUpload); // Log the final array
-    }
+              // Hide initial interface and show editing interface
+              if (validFiles.length > 0) {
+                  if (initialInterface) {
+                      initialInterface.style.display = "none";
+                  }
+                  if (editingInterface) {
+                      editingInterface.style.display = "flex";
+                  }
+              }
+          })
+          .catch(err => {
+              console.error("Error processing files:", err);
+          });
+  }
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 // Helper function to update focused media (image or video)
 function updateFocusedMedia(type, thumbnail, file) {
   const currentlySelected = document.querySelector(".tray-image.selected");
